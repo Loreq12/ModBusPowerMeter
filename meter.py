@@ -6,7 +6,7 @@ import typer
 
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Annotated, Any
+from typing import Annotated, Any, List
 
 
 @dataclass
@@ -18,7 +18,7 @@ class Resource:
     function_code: int = 3
 
 
-resources: list[Resource] = [
+resources: List[Resource] = [
     # Resource(register_address=0x0d, description="Cycle time"),
     Resource(register_address=0x0e, description="L1 Voltage", length=4, data_mode=float),
     Resource(register_address=0x10, description="L2 Voltage", length=4, data_mode=float),
@@ -59,6 +59,7 @@ def setup_meter(device_path: Path) -> minimalmodbus.Instrument:
     smartmeter.mode = minimalmodbus.MODE_RTU   # rtu or ascii mode
     smartmeter.clear_buffers_before_each_transaction = True
     smartmeter.debug = False # set to "True" for debug mode
+    
     return smartmeter
 
 app = typer.Typer()
