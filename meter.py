@@ -97,7 +97,7 @@ resources: List[Resource] = [
 
 def _check_if_db_exists(database_path: Path) -> pd.DataFrame:
     if database_path.exists():
-        return pd.read_excel(database_path)
+        return pd.read_excel(database_path, index_col=0)
     else:
         return pd.DataFrame(columns=["Datetime", "Date", "Time"] + [r.description for r in resources])
 
