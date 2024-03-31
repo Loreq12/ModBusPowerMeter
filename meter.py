@@ -1,4 +1,5 @@
 import datetime
+import logging
 import minimalmodbus
 import pandas as pd
 import serial
@@ -8,6 +9,7 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated, Any, List
 
+logger = logging.Logger(__name__)
 
 @dataclass
 class Resource:
@@ -97,8 +99,10 @@ resources: List[Resource] = [
 
 def _check_if_db_exists(database_path: Path) -> pd.DataFrame:
     if database_path.exists():
+        logger.info(f"Database found")
         return pd.read_excel(database_path, index_col=0)
     else:
+        logger.info(f"Creating new database")
         return pd.DataFrame(columns=["Datetime", "Date", "Time"] + [r.description for r in resources])
 
 def read_all_data(meter: minimalmodbus.Instrument, database_path: Path) -> None:
@@ -108,10 +112,12 @@ def read_all_data(meter: minimalmodbus.Instrument, database_path: Path) -> None:
 
     for resource in resources:
         if resource.data_mode == float:
+            logger.info(f"Quering {resource.description} at address {resource.register_address:x}")
             data: float = meter.read_float(
                 registeraddress=resource.register_address,
                 functioncode=resource.function_code,
             )
+            logger.info(f"For {resource.description} got following value: {data:.2f}")
             result.append(f"{data:.2f}")
 
     db.loc[len(db.index)] = [current_datetime.isoformat(), current_datetime.date().isoformat(), current_datetime.time().isoformat(), *result]
