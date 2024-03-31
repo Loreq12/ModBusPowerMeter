@@ -3,13 +3,22 @@ import logging
 import minimalmodbus
 import pandas as pd
 import serial
+import sys
 import typer
 
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Annotated, Any, List
 
-logger = logging.Logger(__name__)
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(message)s",
+    handlers=[
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
+
 
 @dataclass
 class Resource:
