@@ -14,7 +14,8 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s [%(levelname)s] %(message)s",
     handlers=[
-        logging.StreamHandler()
+        logging.StreamHandler(),
+        logging.FileHandler(f'debug_output/{datetime.datetime.now().isoformat()}.log')
     ]
 )
 logger = logging.getLogger(__name__)
@@ -122,12 +123,18 @@ def read_all_data(meter: minimalmodbus.Instrument, database_path: Path) -> None:
     for resource in resources:
         if resource.data_mode == float:
             logger.info(f"Quering {resource.description} at address {resource.register_address:x}")
-            data: float = meter.read_float(
-                registeraddress=resource.register_address,
-                functioncode=resource.function_code,
-            )
-            logger.info(f"For {resource.description} got following value: {data:.2f}")
-            result.append(f"{data:.2f}")
+            try:
+                data: float = meter.read_float(
+                    registeraddress=resource.register_address,
+                    functioncode=resource.function_code,
+                )
+            except Exception as e:
+                logger.error(f"Could not get data: {e}")
+                # Doesn't affect end result when plotting
+                data = 0
+            else:
+                logger.info(f"For {resource.description} got following value: {data:.2f}")
+                result.append(f"{data:.2f}")
 
     db.loc[len(db.index)] = [current_datetime.isoformat(), current_datetime.date().isoformat(), current_datetime.time().isoformat(), *result]
 
