@@ -137,7 +137,7 @@ def read_all_data(meter: minimalmodbus.Instrument, database_path: Path) -> None:
             finally:
                 result.append(f"{data:.2f}")
 
-    db.loc[len(db.index)] = [current_datetime.isoformat(), current_datetime.date().isoformat(), current_datetime.time().isoformat(), *result]
+    db.loc[len(db.index)] = [current_datetime.strftime("%Y-%m-%d %H:%M:%S"), current_datetime.date().isoformat(), current_datetime.time().isoformat(), *result]
 
     db.to_excel(database_path, sheet_name=str(current_datetime.year))
 
