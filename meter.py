@@ -134,6 +134,7 @@ def read_all_data(meter: minimalmodbus.Instrument, database_path: Path) -> None:
                 data = 0
             else:
                 logger.info(f"For {resource.description} got following value: {data:.2f}")
+            finally:
                 result.append(f"{data:.2f}")
 
     db.loc[len(db.index)] = [current_datetime.isoformat(), current_datetime.date().isoformat(), current_datetime.time().isoformat(), *result]
