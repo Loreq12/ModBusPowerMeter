@@ -52,6 +52,9 @@ resources: List[Resource] = [
     Resource(register_address=0x30, description="L2 Apparent Power", length=4, data_mode=float),
     Resource(register_address=0x32, description="L3 Apparent Power", length=4, data_mode=float),
     Resource(register_address=0x34, description="Total Power Factor", length=4, data_mode=float),
+    Resource(register_address=0x36, description="L1 Power Factor", length=4, data_mode=float),
+    Resource(register_address=0x38, description="L2 Power Factor", length=4, data_mode=float),
+    Resource(register_address=0x3a, description="L3 Power Factor", length=4, data_mode=float),
 
     Resource(register_address=0x100, description="Total Active Energy", length=4, data_mode=float),
     Resource(register_address=0x102, description="L1 Total Active Energy", length=4, data_mode=float),
